@@ -93,6 +93,11 @@ export default async function NuevoLotePage() {
           <input type="checkbox" name="mostrar_precio" />
           Mostrar precio al público
         </label>
+
+        <label>
+          Imagenes del lote (10 maximo)
+          <input type="file" name="imagenes" accept="image/*" multiple />
+        </label>
       <SelectorMapa />
         <button type="submit">Guardar lote</button>
       </form>

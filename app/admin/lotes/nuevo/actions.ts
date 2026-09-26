@@ -27,28 +27,56 @@ export async function crearLote(formData: FormData) {
   const latitud = formData.get("latitud") as string;
   const longitud = formData.get("longitud") as string;
 
-  const { error } = await supabase.from("lotes").insert({
-    metros_cuadrados: Number(metros_cuadrados),
-    tipo,
-    estado,
-    distrito_id: Number(distrito_id),
-    descripcion,
-    agua_potable,
-    electricidad,
-    alcantarillado,
-    internet,
-    calle_asfaltada,
-    alumbrado_publico,
-    telefono,
-    precio_referencia: precio,
-    mostrar_precio,
-    latitud: Number(latitud),
-    longitud: Number(longitud),
-  });
+  const { data: lote, error } = await supabase
+    .from("lotes")
+    .insert({
+      metros_cuadrados: Number(metros_cuadrados),
+      tipo,
+      estado,
+      distrito_id: Number(distrito_id),
+      descripcion,
+      agua_potable,
+      electricidad,
+      alcantarillado,
+      internet,
+      calle_asfaltada,
+      alumbrado_publico,
+      telefono,
+      precio_referencia: precio,
+      mostrar_precio,
+      latitud: Number(latitud),
+      longitud: Number(longitud),
+    })
+    .select("id")
+    .single();
 
   if (error) {
     console.error("Error al crear lote:", error);
     return;
   }
+  const imagenes = formData.getAll("imagenes") as File[];
+
+  for (let i = 0; i < imagenes.length; i++) {
+    const archivo = imagenes[i];
+    if (archivo.size === 0) continue;
+
+    const rutaStorage = `${lote.id}/${i}-${archivo.name}`;
+
+    const { error: errorUpload } = await supabase.storage
+      .from("lotes-imagenes")
+      .upload(rutaStorage, archivo);
+
+    if (errorUpload) {
+      console.error("Error subiendo imagen:", errorUpload);
+      continue;
+    }
+
+    await supabase.from("lote_imagenes").insert({
+      lote_id: lote.id,
+      storage_path: rutaStorage,
+      orden: i,
+    });
+  }
+
   redirect("/admin");
 }
