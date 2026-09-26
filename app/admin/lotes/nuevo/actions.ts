@@ -24,6 +24,9 @@ export async function crearLote(formData: FormData) {
 
   const precio = precio_referencia ? Number(precio_referencia) : null;
 
+  const latitud = formData.get("latitud") as string;
+  const longitud = formData.get("longitud") as string;
+
   const { error } = await supabase.from("lotes").insert({
     metros_cuadrados: Number(metros_cuadrados),
     tipo,
@@ -39,6 +42,8 @@ export async function crearLote(formData: FormData) {
     telefono,
     precio_referencia: precio,
     mostrar_precio,
+    latitud: Number(latitud),
+    longitud: Number(longitud),
   });
 
   if (error) {

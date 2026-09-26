@@ -1,6 +1,7 @@
 import { crearLote } from "./actions";
 import { createClient } from "@/lib/supabase/server";
 import { SelectorUbicacion } from "./selector-ubicacion";
+import { SelectorMapa } from "./selector-mapa";
 
 export default async function NuevoLotePage() {
   const supabase = await createClient();
@@ -92,7 +93,7 @@ export default async function NuevoLotePage() {
           <input type="checkbox" name="mostrar_precio" />
           Mostrar precio al público
         </label>
-
+      <SelectorMapa />
         <button type="submit">Guardar lote</button>
       </form>
     </div>
