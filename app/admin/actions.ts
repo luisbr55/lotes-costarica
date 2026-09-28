@@ -15,3 +15,16 @@ export async function eliminarLote(id:string){
 
     revalidatePath('/admin');
 }
+
+export async function cambiarEstado(id: string, estado: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from('lotes').update({ estado }).eq('id', id);
+
+  if (error) {
+    console.error('Error al cambiar estado:', error);
+    return;
+  }
+
+  revalidatePath('/admin');
+}

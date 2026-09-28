@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { eliminarLote } from "./actions";
 import { BotonEliminar } from "./_components/boton-eliminar";
+import { CambioEstadoRapido } from "./_components/cambiar-estado-rapido";
+import { cambiarEstado } from "./actions";
 
 export default async function AdminDashboard({
   searchParams,
@@ -60,6 +62,11 @@ export default async function AdminDashboard({
             {lote.metros_cuadrados} m² — {lote.tipo} — {lote.estado}{" "}
             <Link href={`/admin/lotes/${lote.id}/editar`}>Editar</Link>
             <BotonEliminar loteId={lote.id} accion={eliminarLote} />
+            <CambioEstadoRapido
+              loteId={lote.id}
+              estadoActual={lote.estado}
+              accion={cambiarEstado}
+            />
           </li>
         ))}
       </ul>
