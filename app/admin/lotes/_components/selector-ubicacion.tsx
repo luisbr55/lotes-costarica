@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 type Provincia = { id: number; nombre: string };
 type Canton = { id: number; provincia_id: number; nombre: string };
@@ -10,16 +10,31 @@ export function SelectorUbicacion({
   provincias,
   cantones,
   distritos,
+  distritoIdInicial,
 }: {
   provincias: Provincia[];
   cantones: Canton[];
   distritos: Distrito[];
+  distritoIdInicial?: number;
 }) {
-  const [provinciaId, setProvinciaId] = useState('');
-  const [cantonId, setCantonId] = useState('');
+  const distritoInicial = distritos.find((d) => d.id === distritoIdInicial);
+  const cantonInicial = cantones.find(
+    (c) => c.id === distritoInicial?.canton_id,
+  );
 
-  const cantonesFiltrados = cantones.filter((c) => c.provincia_id === Number(provinciaId));
-  const distritosFiltrados = distritos.filter((d) => d.canton_id === Number(cantonId));
+  const [provinciaId, setProvinciaId] = useState(
+    cantonInicial ? String(cantonInicial.provincia_id) : "",
+  );
+  const [cantonId, setCantonId] = useState(
+    distritoInicial ? String(distritoInicial.canton_id) : "",
+  );
+
+  const cantonesFiltrados = cantones.filter(
+    (c) => c.provincia_id === Number(provinciaId),
+  );
+  const distritosFiltrados = distritos.filter(
+    (d) => d.canton_id === Number(cantonId),
+  );
 
   return (
     <>
@@ -30,7 +45,7 @@ export function SelectorUbicacion({
           value={provinciaId}
           onChange={(e) => {
             setProvinciaId(e.target.value);
-            setCantonId(''); // reset en cascada
+            setCantonId("");
           }}
           required
         >
@@ -63,7 +78,12 @@ export function SelectorUbicacion({
 
       <label>
         Distrito
-        <select name="distrito_id" disabled={!cantonId} required>
+        <select
+          name="distrito_id"
+          defaultValue={distritoIdInicial ?? ""}
+          disabled={!cantonId}
+          required
+        >
           <option value="">Seleccionar...</option>
           {distritosFiltrados.map((d) => (
             <option key={d.id} value={d.id}>

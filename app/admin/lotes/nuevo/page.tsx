@@ -1,7 +1,7 @@
 import { crearLote } from "./actions";
 import { createClient } from "@/lib/supabase/server";
-import { SelectorUbicacion } from "./selector-ubicacion";
-import { SelectorMapa } from "./selector-mapa";
+import { SelectorUbicacion } from "../_components/selector-ubicacion";
+import { SelectorMapa } from "../_components/selector-mapa";
 
 export default async function NuevoLotePage() {
   const supabase = await createClient();

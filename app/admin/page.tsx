@@ -1,4 +1,7 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { eliminarLote } from "./actions";
+import { BotonEliminar } from "./_components/boton-eliminar";
 
 export default async function AdminDashboard({
   searchParams,
@@ -9,16 +12,18 @@ export default async function AdminDashboard({
   const supabase = await createClient();
 
   let query = supabase
-    .from('lotes')
-    .select('*, distritos!inner(nombre, cantones!inner(nombre, provincias(nombre)))')
-    .order('created_at', { ascending: false });
+    .from("lotes")
+    .select(
+      "*, distritos!inner(nombre, cantones!inner(nombre, provincias(nombre)))",
+    )
+    .order("created_at", { ascending: false });
 
   if (estado) {
-    query = query.eq('estado', estado);
+    query = query.eq("estado", estado);
   }
 
   if (busqueda) {
-    query = query.ilike('distritos.cantones.nombre', `%${busqueda}%`);
+    query = query.ilike("distritos.cantones.nombre", `%${busqueda}%`);
   }
 
   const { data: lotes, error } = await query;
@@ -36,9 +41,9 @@ export default async function AdminDashboard({
           type="text"
           name="busqueda"
           placeholder="Buscar por cantón..."
-          defaultValue={busqueda ?? ''}
+          defaultValue={busqueda ?? ""}
         />
-        <select name="estado" defaultValue={estado ?? ''}>
+        <select name="estado" defaultValue={estado ?? ""}>
           <option value="">Todos</option>
           <option value="disponible">Disponible</option>
           <option value="reservado">Reservado</option>
@@ -50,9 +55,11 @@ export default async function AdminDashboard({
       <ul>
         {lotes.map((lote) => (
           <li key={lote.id}>
-            {lote.distritos.nombre}, {lote.distritos.cantones.nombre},{' '}
-            {lote.distritos.cantones.provincias.nombre} — {lote.metros_cuadrados} m² —{' '}
-            {lote.tipo} — {lote.estado}
+            {lote.distritos.nombre}, {lote.distritos.cantones.nombre},{" "}
+            {lote.distritos.cantones.provincias.nombre} —{" "}
+            {lote.metros_cuadrados} m² — {lote.tipo} — {lote.estado}{" "}
+            <Link href={`/admin/lotes/${lote.id}/editar`}>Editar</Link>
+            <BotonEliminar loteId={lote.id} accion={eliminarLote} />
           </li>
         ))}
       </ul>

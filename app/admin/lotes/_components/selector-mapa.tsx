@@ -7,10 +7,20 @@ import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
 
 const CENTRO_COSTA_RICA = { lat: 9.7489, lng: -83.7534 };
 
-export function SelectorMapa() {
+export function SelectorMapa({
+  latitudInicial,
+  longitudInicial,
+}: {
+  latitudInicial?: number;
+  longitudInicial?: number;
+}) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [latitud, setLatitud] = useState("");
-  const [longitud, setLongitud] = useState("");
+  const [latitud, setLatitud] = useState(
+    latitudInicial != null ? String(latitudInicial) : "",
+  );
+  const [longitud, setLongitud] = useState(
+    longitudInicial != null ? String(longitudInicial) : "",
+  );
 
   useEffect(() => {
     setOptions({
@@ -19,36 +29,37 @@ export function SelectorMapa() {
     });
 
     let marker: google.maps.Marker | null = null;
+    const hayInicial = latitudInicial != null && longitudInicial != null;
+    const centroInicial = hayInicial
+      ? { lat: latitudInicial!, lng: longitudInicial! }
+      : CENTRO_COSTA_RICA;
 
     importLibrary("maps").then(({ Map }) => {
       if (!mapRef.current) return;
 
       const map = new Map(mapRef.current, {
-        center: CENTRO_COSTA_RICA,
-        zoom: 8,
+        center: centroInicial,
+        zoom: hayInicial ? 15 : 8,
       });
+
+      if (hayInicial) {
+        marker = new google.maps.Marker({ position: centroInicial, map });
+      }
 
       map.addListener("click", (e: google.maps.MapMouseEvent) => {
         if (!e.latLng) return;
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
+        setLatitud(String(e.latLng.lat()));
+        setLongitud(String(e.latLng.lng()));
 
-        setLatitud(String(lat));
-        setLongitud(String(lng));
-
-        if (marker) {
-          marker.setPosition(e.latLng);
-        } else {
-          marker = new google.maps.Marker({ position: e.latLng, map });
-        }
+        if (marker) marker.setPosition(e.latLng);
+        else marker = new google.maps.Marker({ position: e.latLng, map });
       });
     });
-  }, []);
+  }, [latitudInicial, longitudInicial]);
 
   return (
     <div>
       <div ref={mapRef} style={{ height: "300px", width: "100%" }} />
-
       <label>
         Latitud
         <input
