@@ -1,68 +1,118 @@
-import Image from "next/image";
+import { createClient } from '@/lib/supabase/server';
+import { FiltroUbicacion } from './_components/filtro-ubicacion';
 
-export default function Home() {
+const ESTADO_ESTILOS: Record<string, string> = {
+  disponible: 'bg-success/15 text-success',
+  reservado: 'bg-warning/15 text-warning',
+  vendido: 'bg-destructive/15 text-destructive',
+};
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    provincia_id?: string;
+    canton_id?: string;
+    distrito_id?: string;
+    tipo?: string;
+    mostrar_todos?: string;
+  }>;
+}) {
+  const { provincia_id, canton_id, distrito_id, tipo, mostrar_todos } = await searchParams;
+
+  const supabase = await createClient();
+
+  const [{ data: provincias }, { data: cantones }, { data: distritos }] = await Promise.all([
+    supabase.from('provincias').select('*').order('nombre'),
+    supabase.from('cantones').select('*').order('nombre'),
+    supabase.from('distritos').select('*').order('nombre'),
+  ]);
+
+  let query = supabase
+    .from('lotes_publico')
+    .select('*, distritos(nombre, cantones(nombre, provincias(nombre)))');
+
+  if (!mostrar_todos) {
+    query = query.eq('estado', 'disponible');
+  }
+
+  if (distrito_id) {
+    query = query.eq('distrito_id', Number(distrito_id));
+  } else if (canton_id) {
+    const distritosIds = (distritos ?? [])
+      .filter((d) => d.canton_id === Number(canton_id))
+      .map((d) => d.id);
+    query = query.in('distrito_id', distritosIds);
+  } else if (provincia_id) {
+    const cantonesIds = (cantones ?? [])
+      .filter((c) => c.provincia_id === Number(provincia_id))
+      .map((c) => c.id);
+    const distritosIds = (distritos ?? [])
+      .filter((d) => cantonesIds.includes(d.canton_id))
+      .map((d) => d.id);
+    query = query.in('distrito_id', distritosIds);
+  }
+
+  if (tipo) {
+    query = query.eq('tipo', tipo);
+  }
+
+  const { data: lotes, error } = await query;
+
+  if (error) {
+    return <p className="p-6 text-destructive">Error cargando lotes: {error.message}</p>;
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      <header className="bg-primary px-4 py-4 sm:px-6">
+        <span className="text-background font-medium text-lg">Lotes CR</span>
+      </header>
+
+      <main className="px-4 py-6 sm:px-6">
+        <h1 className="text-2xl font-semibold mb-4">Lotes en venta</h1>
+
+        <div className="mb-6">
+          <FiltroUbicacion
+            provincias={provincias ?? []}
+            cantones={cantones ?? []}
+            distritos={distritos ?? []}
+            provinciaIdInicial={provincia_id}
+            cantonIdInicial={canton_id}
+            distritoIdInicial={distrito_id}
+            tipoInicial={tipo}
+            mostrarTodosInicial={mostrar_todos === 'on'}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        {lotes.length === 0 ? (
+          <p className="text-text-muted">No hay lotes que coincidan con tu búsqueda.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {lotes.map((lote) => (
+              <a
+                key={lote.id}
+                href={`/lotes/${lote.id}`}
+                className="border border-surface-alt rounded-lg overflow-hidden bg-white hover:shadow-md transition-shadow"
+              >
+                <div className="h-28 bg-surface flex items-center justify-center text-text-muted">
+                  Sin imagen
+                </div>
+                <div className="p-3">
+                  <span className={`inline-block text-xs px-2.5 py-1 rounded-full ${ESTADO_ESTILOS[lote.estado]}`}>
+                    {lote.estado}
+                  </span>
+                  <p className="text-sm font-medium mt-2 text-text">
+                    {lote.distritos.cantones.nombre}, {lote.distritos.cantones.provincias.nombre}
+                  </p>
+                  <p className="text-sm text-text-muted">
+                    {lote.metros_cuadrados} m² · {lote.tipo}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
