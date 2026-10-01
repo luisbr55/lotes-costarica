@@ -65,10 +65,7 @@ export default async function HomePage({
 
   return (
     <div>
-      <header className="bg-primary px-4 py-4 sm:px-6">
-        <span className="text-background font-medium text-lg">Lotes CR</span>
-      </header>
-
+ 
       <main className="px-4 py-6 sm:px-6">
         <h1 className="text-2xl font-semibold mb-4">Lotes en venta</h1>
 
