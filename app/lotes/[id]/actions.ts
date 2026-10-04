@@ -26,6 +26,6 @@ export async function enviarConsulta(
     console.error('Error al enviar consulta:', error);
     return { success: false, error: 'Hubo un error al enviar tu consulta. Intentá de nuevo.' };
   }
-
+  console.log("test");
   return { success: true };
 }
