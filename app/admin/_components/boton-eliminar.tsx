@@ -15,9 +15,13 @@ export function BotonEliminar({
           e.preventDefault();
         }
       }}
-      style={{ display: 'inline' }}
     >
-      <button type="submit">Eliminar</button>
+      <button
+        type="submit"
+        className="text-sm text-destructive hover:underline"
+      >
+        Eliminar
+      </button>
     </form>
   );
 }

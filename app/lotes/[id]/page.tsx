@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { MapaLote } from "../../_components/mapa-lote";
 import { FaWhatsapp } from "react-icons/fa6";
-import { enviarConsulta } from "./actions";
+import { FormularioConsulta } from "../../_components/formulario-consulta";
+import { BotonEnviarConsulta } from "../../_components/boton-enviar-consulta";
 
 const SERVICIOS: { campo: string; etiqueta: string }[] = [
   { campo: "agua_potable", etiqueta: "Agua potable" },
@@ -166,41 +167,7 @@ export default async function DetalleLotePage({
           <h2 className="text-sm font-medium text-text mb-2">
             Enviar consulta
           </h2>
-          <form
-            action={enviarConsulta}
-            className="flex flex-col gap-3 max-w-md"
-          >
-            <input type="hidden" name="lote_id" value={lote.id} />
-
-            <input
-              type="text"
-              name="nombre"
-              placeholder="Nombre"
-              required
-              className="border border-surface-alt rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:border-primary"
-            />
-            <input
-              type="text"
-              name="contacto"
-              placeholder="Teléfono o correo"
-              required
-              className="border border-surface-alt rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:border-primary"
-            />
-            <textarea
-              name="mensaje"
-              placeholder="Mensaje"
-              required
-              rows={4}
-              className="border border-surface-alt rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:border-primary resize-none"
-            />
-
-            <button
-              type="submit"
-              className="bg-primary text-background rounded-md px-4 py-2.5 text-sm font-medium hover:bg-primary-hover self-start"
-            >
-              Enviar consulta
-            </button>
-          </form>
+          <FormularioConsulta loteId={lote.id} />
         </div>
       </main>
     </div>

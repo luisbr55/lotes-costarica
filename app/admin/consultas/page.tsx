@@ -35,7 +35,11 @@ export default async function ConsultasPage() {
           {consultas.map((consulta) => (
             <li
               key={consulta.id}
-              className="border border-surface-alt rounded-lg p-4"
+              className={`border rounded-lg p-4 ${
+                consulta.atendida
+                  ? "border-surface-alt bg-surface/50"
+                  : "border-surface-alt"
+              }`}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>

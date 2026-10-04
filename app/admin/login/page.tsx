@@ -30,38 +30,49 @@ export default function LoginPage() {
 
     const next = searchParams.get('next') ?? '/admin';
     router.push(next);
-    router.refresh(); // fuerza a los Server Components a re-leer la sesión
+    router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Iniciar sesión</h1>
+    <div className="min-h-[70vh] flex items-center justify-center p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-surface border border-surface-alt rounded-lg p-6 flex flex-col gap-4"
+      >
+        <h1 className="text-xl font-semibold text-text text-center mb-2">Iniciar sesión</h1>
 
-      <label>
-        Email
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </label>
+        <label className="flex flex-col gap-1 text-sm text-text">
+          Email
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="border border-surface-alt rounded-md px-3 py-2 text-sm bg-white"
+          />
+        </label>
 
-      <label>
-        Contraseña
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
+        <label className="flex flex-col gap-1 text-sm text-text">
+          Contraseña
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="border border-surface-alt rounded-md px-3 py-2 text-sm bg-white"
+          />
+        </label>
 
-      {error && <p role="alert">{error}</p>}
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
-      <button type="submit" disabled={cargando}>
-        {cargando ? 'Entrando...' : 'Entrar'}
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={cargando}
+          className="bg-primary text-background rounded-md px-4 py-2.5 text-sm font-medium hover:bg-primary-hover disabled:opacity-50"
+        >
+          {cargando ? 'Entrando...' : 'Entrar'}
+        </button>
+      </form>
+    </div>
   );
 }

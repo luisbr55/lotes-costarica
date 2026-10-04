@@ -13,6 +13,7 @@ export function CambioEstadoRapido({
     <select
       defaultValue={estadoActual}
       onChange={(e) => accion(loteId, e.target.value)}
+      className="border border-surface-alt rounded-md px-2 py-1 text-sm"
     >
       <option value="disponible">Disponible</option>
       <option value="reservado">Reservado</option>
