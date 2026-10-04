@@ -36,7 +36,10 @@ export default async function AdminDashboard({
 
   return (
     <div>
-      <h1>Lotes</h1>
+      <div className="flex items-center justify-between">
+        <h1>Lotes</h1>
+        <Link href="/admin/consultas">Ver consultas</Link>
+      </div>
 
       <form>
         <input

@@ -16,6 +16,19 @@ export async function eliminarLote(id:string){
     revalidatePath('/admin');
 }
 
+export async function marcarAtendida(id: string, atendida: boolean) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from('consultas').update({ atendida }).eq('id', id);
+
+  if (error) {
+    console.error('Error al actualizar consulta:', error);
+    return;
+  }
+
+  revalidatePath('/admin/consultas');
+}
+
 export async function cambiarEstado(id: string, estado: string) {
   const supabase = await createClient();
 
