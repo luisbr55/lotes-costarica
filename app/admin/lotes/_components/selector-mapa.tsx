@@ -21,7 +21,7 @@ export function SelectorMapa({
   const [longitud, setLongitud] = useState(longitudInicial != null ? String(longitudInicial) : '');
 
   useEffect(() => {
-    setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!, v: 'weekly' });
+    setOptions({ key: process.env.GOOGLE_MAPS_API_KEY!, v: 'weekly' });
 
     let marker: google.maps.Marker | null = null;
     const hayInicial = latitudInicial != null && longitudInicial != null;
