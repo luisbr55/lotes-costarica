@@ -18,7 +18,7 @@ export async function createClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // Ignorado a propósito — ver comentario arriba
+            
             console.warn(
               "setAll falló, esperado si corre desde un Server Component",
             );

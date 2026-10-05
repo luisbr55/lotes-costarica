@@ -7,7 +7,7 @@ export function MapaLote({ latitud, longitud }: { latitud: number; longitud: num
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setOptions({ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!, v: 'weekly' });
+    setOptions({ key: process.env.GOOGLE_MAPS_API_KEY!, v: 'weekly' });
 
     importLibrary('maps').then(({ Map }) => {
       if (!mapRef.current) return;
