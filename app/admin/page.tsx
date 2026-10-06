@@ -1,14 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import { eliminarLote, cambiarEstado } from './actions';
-import { BotonEliminar } from './_components/boton-eliminar';
-import { CambioEstadoRapido } from './_components/cambiar-estado-rapido';
-
-const ESTADO_ESTILOS: Record<string, string> = {
-  disponible: 'bg-success/15 text-success',
-  reservado: 'bg-warning/15 text-warning',
-  vendido: 'bg-destructive/15 text-destructive',
-};
+import { ListaLotes } from './_components/lista-lotes';
 
 export default async function AdminDashboard({
   searchParams,
@@ -79,44 +71,7 @@ export default async function AdminDashboard({
         Agregar lote
       </Link>
 
-      {lotes.length === 0 ? (
-        <p className="text-text-muted">No hay lotes que coincidan con tu búsqueda.</p>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {lotes.map((lote) => (
-            <li
-              key={lote.id}
-              className="border border-surface-alt rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-            >
-              <div>
-                <span
-                  className={`inline-block text-xs px-2.5 py-1 rounded-full mb-1 ${ESTADO_ESTILOS[lote.estado]}`}
-                >
-                  {lote.estado}
-                </span>
-                <p className="text-sm font-medium text-text">
-                  {lote.distritos.nombre}, {lote.distritos.cantones.nombre},{' '}
-                  {lote.distritos.cantones.provincias.nombre}
-                </p>
-                <p className="text-sm text-text-muted">
-                  {lote.metros_cuadrados} m² · {lote.tipo}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 flex-wrap">
-                <CambioEstadoRapido loteId={lote.id} estadoActual={lote.estado} accion={cambiarEstado} />
-                <Link
-                  href={`/admin/lotes/${lote.id}/editar`}
-                  className="text-sm text-primary hover:underline"
-                >
-                  Editar
-                </Link>
-                <BotonEliminar loteId={lote.id} accion={eliminarLote} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <ListaLotes lotesIniciales={lotes} />
     </div>
   );
 }
