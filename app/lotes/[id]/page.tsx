@@ -1,11 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { MapaLote } from "../../_components/mapa-lote";
 import { FaWhatsapp } from "react-icons/fa6";
 import { FormularioConsulta } from "../../_components/formulario-consulta";
-import { BotonEnviarConsulta } from "../../_components/boton-enviar-consulta";
+import { GaleriaLote } from "../../_components/galeria-lote";
 
 const SERVICIOS: { campo: string; etiqueta: string }[] = [
   { campo: "agua_potable", etiqueta: "Agua potable" },
@@ -67,31 +66,7 @@ export default async function DetalleLotePage({
         </Link>
 
         <div className="mb-6">
-          {urlsImagenes.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <Image
-                src={urlsImagenes[0]}
-                alt="Foto principal del lote"
-                className="w-full h-56 sm:h-72 object-cover rounded-lg sm:col-span-2"
-                width={800}
-                height={450}
-              />
-              {urlsImagenes.slice(1).map((url, i) => (
-                <Image
-                  key={i}
-                  src={url}
-                  alt={`Foto ${i + 2} del lote`}
-                  className="w-full h-40 object-cover rounded-lg"
-                  width={400}
-                  height={300}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="h-56 bg-surface rounded-lg flex items-center justify-center text-text-muted">
-              Sin imágenes disponibles
-            </div>
-          )}
+          <GaleriaLote urls={urlsImagenes} />
         </div>
 
         <div className="flex items-center justify-between mb-1">
