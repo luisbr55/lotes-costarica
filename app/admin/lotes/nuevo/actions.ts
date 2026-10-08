@@ -54,28 +54,22 @@ export async function crearLote(formData: FormData) {
     console.error("Error al crear lote:", error);
     return;
   }
-  const imagenes = formData.getAll("imagenes") as File[];
+  const rutas = formData.getAll("imagen_paths") as string[];
 
-  for (let i = 0; i < imagenes.length; i++) {
-    const archivo = imagenes[i];
-    if (archivo.size === 0) continue;
+  if (rutas.length > 0) {
+    const { error: errorImagenes } = await supabase
+      .from("lote_imagenes")
+      .insert(
+        rutas.map((storage_path, i) => ({
+          lote_id: lote.id,
+          storage_path,
+          orden: i,
+        })),
+      );
 
-    const rutaStorage = `${lote.id}/${i}-${archivo.name}`;
-
-    const { error: errorUpload } = await supabase.storage
-      .from("lotes-imagenes")
-      .upload(rutaStorage, archivo);
-
-    if (errorUpload) {
-      console.error("Error subiendo imagen:", errorUpload);
-      continue;
+    if (errorImagenes) {
+      console.error("Error guardando imágenes:", errorImagenes);
     }
-
-    await supabase.from("lote_imagenes").insert({
-      lote_id: lote.id,
-      storage_path: rutaStorage,
-      orden: i,
-    });
   }
 
   redirect("/admin");

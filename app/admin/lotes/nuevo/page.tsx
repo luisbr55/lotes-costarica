@@ -1,20 +1,24 @@
-import { crearLote } from './actions';
-import { createClient } from '@/lib/supabase/server';
-import { SelectorUbicacion } from '../_components/selector-ubicacion';
-import { SelectorMapa } from '../_components/selector-mapa';
-import { BotonGuardar } from '../_components/boton-guardar';
+import { crearLote } from "./actions";
+import { createClient } from "@/lib/supabase/server";
+import { SelectorUbicacion } from "../_components/selector-ubicacion";
+import { SelectorMapa } from "../_components/selector-mapa";
+import { BotonGuardar } from "../_components/boton-guardar";
+import { SubidaImagenes } from "../_components/subida-imagenes";
 
-const inputClase = 'border border-surface-alt rounded-md px-3 py-2 text-sm w-full';
-const labelClase = 'flex flex-col gap-1 text-sm text-text';
-const checkboxLabelClase = 'flex items-center gap-2 text-sm text-text';
+
+const inputClase =
+  "border border-surface-alt rounded-md px-3 py-2 text-sm w-full";
+const labelClase = "flex flex-col gap-1 text-sm text-text";
+const checkboxLabelClase = "flex items-center gap-2 text-sm text-text";
 
 export default async function NuevoLotePage() {
   const supabase = await createClient();
-  const [{ data: provincias }, { data: cantones }, { data: distritos }] = await Promise.all([
-    supabase.from('provincias').select('*').order('nombre'),
-    supabase.from('cantones').select('*').order('nombre'),
-    supabase.from('distritos').select('*').order('nombre'),
-  ]);
+  const [{ data: provincias }, { data: cantones }, { data: distritos }] =
+    await Promise.all([
+      supabase.from("provincias").select("*").order("nombre"),
+      supabase.from("cantones").select("*").order("nombre"),
+      supabase.from("distritos").select("*").order("nombre"),
+    ]);
 
   return (
     <div className="p-4 sm:p-6 max-w-2xl mx-auto">
@@ -31,7 +35,14 @@ export default async function NuevoLotePage() {
 
         <label className={labelClase}>
           Metros cuadrados
-          <input type="number" name="metros_cuadrados" step="0.01" min="0" required className={inputClase} />
+          <input
+            type="number"
+            name="metros_cuadrados"
+            step="0.01"
+            min="0"
+            required
+            className={inputClase}
+          />
         </label>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -46,7 +57,11 @@ export default async function NuevoLotePage() {
 
           <label className={labelClase}>
             Estado
-            <select name="estado" defaultValue="disponible" className={inputClase}>
+            <select
+              name="estado"
+              defaultValue="disponible"
+              className={inputClase}
+            >
               <option value="disponible">Disponible</option>
               <option value="reservado">Reservado</option>
               <option value="vendido">Vendido</option>
@@ -55,28 +70,65 @@ export default async function NuevoLotePage() {
         </div>
 
         <div>
-          <p className="text-sm font-medium text-text mb-2">Servicios disponibles</p>
+          <p className="text-sm font-medium text-text mb-2">
+            Servicios disponibles
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="agua_potable" className="accent-primary" /> Agua potable
+              <input
+                type="checkbox"
+                name="agua_potable"
+                className="accent-primary"
+              />{" "}
+              Agua potable
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="electricidad" className="accent-primary" /> Electricidad
+              <input
+                type="checkbox"
+                name="electricidad"
+                className="accent-primary"
+              />{" "}
+              Electricidad
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="alcantarillado" className="accent-primary" /> Alcantarillado
+              <input
+                type="checkbox"
+                name="alcantarillado"
+                className="accent-primary"
+              />{" "}
+              Alcantarillado
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="internet" className="accent-primary" /> Internet
+              <input
+                type="checkbox"
+                name="internet"
+                className="accent-primary"
+              />{" "}
+              Internet
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="calle_asfaltada" className="accent-primary" /> Calle asfaltada
+              <input
+                type="checkbox"
+                name="calle_asfaltada"
+                className="accent-primary"
+              />{" "}
+              Calle asfaltada
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="alumbrado_publico" className="accent-primary" /> Alumbrado público
+              <input
+                type="checkbox"
+                name="alumbrado_publico"
+                className="accent-primary"
+              />{" "}
+              Alumbrado público
             </label>
             <label className={checkboxLabelClase}>
-              <input type="checkbox" name="telefono" className="accent-primary" /> Teléfono
+              <input
+                type="checkbox"
+                name="telefono"
+                className="accent-primary"
+              />{" "}
+              Teléfono
             </label>
           </div>
         </div>
@@ -89,24 +141,34 @@ export default async function NuevoLotePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <label className={labelClase}>
             Precio de referencia
-            <input type="number" name="precio_referencia" step="0.01" min="0" className={inputClase} />
+            <input
+              type="number"
+              name="precio_referencia"
+              step="0.01"
+              min="0"
+              className={inputClase}
+            />
           </label>
           <label className={`${checkboxLabelClase} sm:self-end sm:pb-2`}>
-            <input type="checkbox" name="mostrar_precio" className="accent-primary" /> Mostrar precio al público
+            <input
+              type="checkbox"
+              name="mostrar_precio"
+              className="accent-primary"
+            />{" "}
+            Mostrar precio al público
           </label>
         </div>
 
         <div>
-          <p className="text-sm font-medium text-text mb-2">Ubicación en el mapa</p>
+          <p className="text-sm font-medium text-text mb-2">
+            Ubicación en el mapa
+          </p>
           <SelectorMapa />
         </div>
 
-        <label className={labelClase}>
-          Imágenes (hasta 10)
-          <input type="file" name="imagenes" accept="image/*" multiple className="text-sm" />
-        </label>
+        <SubidaImagenes />
 
-       <BotonGuardar texto ="Agregar lote" />
+        <BotonGuardar texto="Agregar lote" />
       </form>
     </div>
   );
