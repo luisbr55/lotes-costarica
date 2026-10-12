@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { MapaLote } from "../../_components/mapa-lote";
 import { FaWhatsapp } from "react-icons/fa6";
 import { FormularioConsulta } from "../../_components/formulario-consulta";
@@ -23,6 +24,51 @@ const ESTADO_ESTILOS: Record<string, string> = {
 };
 
 const WHATSAPP_NUMERO = "50684460066";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: lote } = await supabase
+    .from("lotes_publico")
+    .select("*, distritos(nombre, cantones(nombre, provincias(nombre)))")
+    .eq("id", id)
+    .single();
+
+  if (!lote) return { title: "Lote no encontrado" };
+
+  const { data: portada } = await supabase
+    .from("lote_imagenes")
+    .select("storage_path")
+    .eq("lote_id", id)
+    .eq("orden", 0)
+    .maybeSingle();
+
+  const imagen = portada
+    ? supabase.storage
+        .from("lotes-imagenes")
+        .getPublicUrl(portada.storage_path).data.publicUrl
+    : undefined;
+
+  const ubicacion = `${lote.distritos.cantones.nombre}, ${lote.distritos.cantones.provincias.nombre}`;
+  const titulo = `Lote de ${lote.metros_cuadrados} m² en ${ubicacion}`;
+  const descripcion = `Lote ${lote.tipo} de ${lote.metros_cuadrados} m² en ${lote.distritos.nombre}, ${ubicacion}. Mirá fotos, ubicación en mapa y servicios disponibles.`;
+
+  return {
+    title: titulo,
+    description: descripcion,
+    alternates: { canonical: `/lotes/${id}` },
+    openGraph: {
+      title: titulo,
+      description: descripcion,
+      images: imagen ? [imagen] : undefined,
+    },
+  };
+}
 
 export default async function DetalleLotePage({
   params,

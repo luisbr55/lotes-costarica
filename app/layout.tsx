@@ -10,8 +10,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Lotes Costa Rica",
-  description: "Lotes de terreno en venta en Costa Rica",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
+  title: {
+    default: "Lotes Costa Rica | Lotes de terreno en venta",
+    template: "%s | Lotes Costa Rica",
+  },
+  description:
+    "Lotes de terreno en venta en Costa Rica. Buscá por provincia, cantón y distrito, con fotos, ubicación en mapa y servicios disponibles.",
+  openGraph: {
+    siteName: "Lotes Costa Rica",
+    locale: "es_CR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

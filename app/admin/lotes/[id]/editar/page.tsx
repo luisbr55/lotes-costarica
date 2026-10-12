@@ -5,6 +5,7 @@ import { SelectorMapa } from '../../_components/selector-mapa';
 import { actualizarLote } from './actions';
 import { BotonGuardar } from '../../_components/boton-guardar';
 
+
 const inputClase = 'border border-surface-alt rounded-md px-3 py-2 text-sm w-full';
 const labelClase = 'flex flex-col gap-1 text-sm text-text';
 const checkboxLabelClase = 'flex items-center gap-2 text-sm text-text';
