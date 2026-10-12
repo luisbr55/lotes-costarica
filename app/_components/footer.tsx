@@ -19,7 +19,7 @@ export function Footer() {
             Escribinos por WhatsApp
           </a>
           <a
-            href="https://instagram.com/tu-usuario"
+            href="https://www.instagram.com/lotes_costa_rica/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 hover:text-text"
