@@ -19,7 +19,11 @@ export const metadata: Metadata = {
   },
   description:
     "Lotes de terreno en venta en Costa Rica. Buscá por provincia, cantón y distrito, con fotos, ubicación en mapa y servicios disponibles.",
-  openGraph: {
+    icons: {
+      icon: "/logo-lotes-cr.svg",
+    },
+  
+    openGraph: {
     siteName: "Lotes Costa Rica",
     locale: "es_CR",
     type: "website",
